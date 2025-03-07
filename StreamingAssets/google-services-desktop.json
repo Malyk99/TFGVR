@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "25618251787",
+    "firebase_url": "https://vrprojectdb-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "vrprojectdb",
+    "storage_bucket": "vrprojectdb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25618251787:android:f1632e1ee25d3e5bb9070e",
+        "android_client_info": {
+          "package_name": "com.AlvMal.Firebase01"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8IHCRX8UWwClxGOAsyMPIuD2FeV6P7Z4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
