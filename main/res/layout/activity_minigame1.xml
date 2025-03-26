@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <!-- Countdown Timer at the Top Center -->
+    <TextView
+        android:id="@+id/textCountdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="60"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Horizontal layout for Block buttons -->
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <Button
+            android:id="@+id/buttonBlock1"
+            android:layout_width="172dp"
+            android:layout_height="100dp"
+            android:text="Block 1" />
+
+        <Button
+            android:id="@+id/buttonBlock2"
+            android:layout_width="172dp"
+            android:layout_height="100dp"
+            android:text="Block 2" />
+
+        <Button
+            android:id="@+id/buttonBlock3"
+            android:layout_width="172dp"
+            android:layout_height="match_parent"
+            android:text="Block 3" />
+    </LinearLayout>
+
+    <!-- Back Button at Bottom Right -->
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"/>
+
+</RelativeLayout>

@@ -3,15 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="20dp">
+    android:padding="16dp"
+    android:gravity="center_horizontal">
+
+    <!-- Push Content Down -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <EditText
         android:id="@+id/usernameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter Username"
-        android:maxLength="20"/>
+        android:maxLength="20"
+        android:minHeight="48dp"
+        android:padding="10dp"/>
 
     <EditText
         android:id="@+id/roomCodeInput"
@@ -19,14 +27,36 @@
         android:layout_height="wrap_content"
         android:hint="Enter Room Code"
         android:inputType="number"
-        android:maxLength="20"/>
-
-    <View android:layout_height="20dp" android:layout_width="match_parent" />
+        android:maxLength="6"
+        android:minHeight="48dp"
+        android:padding="10dp"
+        android:layout_marginTop="8dp"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:id="@+id/buttonJoinRoom"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Join Room"
-        android:onClick="onJoinRoom"/>
+        android:layout_marginTop="16dp"/>
 
+    <!-- Push Back Button to Bottom -->
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/buttonBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:padding="8dp"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"/>
+    </RelativeLayout>
 </LinearLayout>
