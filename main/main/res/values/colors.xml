@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF0000</color>  <!-- Red color -->
+    <color name="green">#00FF00</color> <!-- Green color -->
+    <color name="blue">#0000FF</color>  <!-- Blue -->
+    <color name="orange">#FFA500</color>  <!-- Orange -->
+    <color name="yellow">#FFFF00</color>  <!-- Yellow -->
+    <color name="pink">#FFC0CB</color>  <!-- Pink -->
+    <color name="grey">#808080</color>  <!-- Grey -->
+    <color name="background_color">#808080</color> <!-- Replace with your desired color -->
+
+
+</resources>

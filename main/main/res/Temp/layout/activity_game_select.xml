@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#121212">
+
+    <GridLayout
+        android:id="@+id/gridMinigames"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+
+        <Button
+            android:id="@+id/buttonMinigame1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:text="Basketball"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF5722"
+            android:elevation="6dp"
+            android:layout_margin="8dp" />
+
+        <Button
+            android:id="@+id/buttonMinigame2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:text="Pong"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#03A9F4"
+            android:elevation="6dp"
+            android:layout_margin="8dp" />
+
+        <Button
+            android:id="@+id/buttonMinigame3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:text="Archery"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#8500EE"
+            android:elevation="6dp"
+            android:layout_margin="8dp" />
+
+        <Button
+            android:id="@+id/buttonMinigame4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:text="Puzzle"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#4CAF50"
+            android:elevation="6dp"
+            android:layout_margin="8dp" />
+
+    </GridLayout>
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#6200EE"
+        android:elevation="4dp"
+        android:layout_gravity="end"
+        android:padding="12dp"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
