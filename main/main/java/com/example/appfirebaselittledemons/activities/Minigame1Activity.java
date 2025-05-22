@@ -10,61 +10,60 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
 import com.example.appfirebaselittledemons.R;
 import com.example.appfirebaselittledemons.utils.FirebaseUtils;
+import com.example.appfirebaselittledemons.utils.NavigationUtils;
 import com.google.firebase.database.*;
 
 public class Minigame1Activity extends AppCompatActivity {
-    private String roomCode, userId;
+    private String roomCode, userId, username;
     private DatabaseReference minigameRef, countdownRef;
-    private Button buttonBlock1, buttonBlock2, buttonBlock3, buttonBack;
+    private Button buttonBlock1, buttonBlock2, buttonBlock3;
     private TextView textCountdown;
     private final Handler handler = new Handler();
     private CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("Minigame1Activity", "Entered Minigame1Activity");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minigame1);
 
-        // ✅ Retrieve roomCode and userId
-        if (getIntent() != null && getIntent().hasExtra("roomCode") && getIntent().hasExtra("userId")) {
+        if (getIntent() != null && getIntent().hasExtra("roomCode") && getIntent().hasExtra("userId") && getIntent().hasExtra("username")) {
             roomCode = getIntent().getStringExtra("roomCode");
             userId = getIntent().getStringExtra("userId");
+            username = getIntent().getStringExtra("username");
         } else {
             Toast.makeText(this, "Room data missing!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // ✅ Start kicked player listener
         FirebaseUtils.monitorPlayerStatus(this, roomCode, userId);
 
-        // ✅ Firebase References (Now under "minigames" node)
+        // ✅ Firebase References
         minigameRef = FirebaseDatabase.getInstance()
                 .getReference("rooms")
                 .child(roomCode)
                 .child("minigames")
                 .child("minigame1");
 
-        countdownRef = FirebaseDatabase.getInstance()
-                .getReference("rooms")
-                .child(roomCode)
-                .child("minigames")
-                .child("minigame1")
-                .child("minigame1Countdown");
+        countdownRef = minigameRef.child("minigame1Countdown");
 
         // ✅ Initialize UI Components
         textCountdown = findViewById(R.id.textCountdown);
         buttonBlock1 = findViewById(R.id.buttonBlock1);
         buttonBlock2 = findViewById(R.id.buttonBlock2);
         buttonBlock3 = findViewById(R.id.buttonBlock3);
-        buttonBack = findViewById(R.id.buttonBack);
 
-        // ✅ Apply animation from res/anim/
+        // ✅ Apply animations
         applyAnimation(buttonBlock1);
         applyAnimation(buttonBlock2);
         applyAnimation(buttonBlock3);
@@ -79,18 +78,10 @@ public class Minigame1Activity extends AppCompatActivity {
         setupBlockerListener("blocker2", buttonBlock2);
         setupBlockerListener("blocker3", buttonBlock3);
 
-        // ✅ Back Button
-        buttonBack.setOnClickListener(v -> {
-            Intent intent = new Intent(Minigame1Activity.this, GameSelectActivity.class);
-            intent.putExtra("roomCode", roomCode);
-            intent.putExtra("userId", userId);
-            startActivity(intent);
-            finish();
-        });
-
         // ✅ Start Countdown Timer
         startCountdown();
     }
+
 
     /** ✅ Start the countdown timer */
     private void startCountdown() {
@@ -99,7 +90,7 @@ public class Minigame1Activity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Long timeRemaining = snapshot.getValue(Long.class);
                 if (timeRemaining == null || timeRemaining <= 0) {
-                    countdownRef.setValue(60); // If no countdown exists, start new at 60s
+                    countdownRef.setValue(60); // Start new
                     beginCountdown(60);
                 } else {
                     beginCountdown(timeRemaining);
@@ -113,32 +104,62 @@ public class Minigame1Activity extends AppCompatActivity {
         });
     }
 
-    /** ✅ Start countdown and update Firebase every second */
+    /** ✅ Run countdown and update Firebase every second */
     private void beginCountdown(long timeRemaining) {
         countDownTimer = new CountDownTimer(timeRemaining * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 long secondsLeft = millisUntilFinished / 1000;
                 textCountdown.setText(String.valueOf(secondsLeft));
-                countdownRef.setValue(secondsLeft); // Update Firebase every second
+                countdownRef.setValue(secondsLeft);
             }
 
             @Override
             public void onFinish() {
-                countdownRef.setValue(0); // Ensure countdown resets in Firebase
-                endMinigame();
+                countdownRef.setValue(0);
+                disableAllButtons(); // Optional
+                waitForGameFinishSignal();
             }
+
         }.start();
     }
+    private void disableAllButtons() {
+        buttonBlock1.setEnabled(false);
+        buttonBlock2.setEnabled(false);
+        buttonBlock3.setEnabled(false);
+    }
 
-    /** ✅ End Minigame and Return to Game Select */
+    private void waitForGameFinishSignal() {
+        DatabaseReference gameStateRef = FirebaseDatabase.getInstance()
+                .getReference("rooms")
+                .child(roomCode)
+                .child("minigames")
+                .child("minigame1")
+                .child("gameState");
+
+        gameStateRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String state = snapshot.getValue(String.class);
+                if ("finished".equals(state)) {
+                    gameStateRef.removeEventListener(this); // cleanup
+                    Toast.makeText(Minigame1Activity.this, "Game finished, returning to lobby…", Toast.LENGTH_SHORT).show();
+                    handler.postDelayed(() -> NavigationUtils.returnToLobby(Minigame1Activity.this, roomCode, userId, username), 5000);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", "Failed to listen for gameState change", error.toException());
+            }
+        });
+    }
+
+    /** ✅ End minigame with 5s delay and return to lobby */
     private void endMinigame() {
-        Toast.makeText(this, "Minigame Over!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Minigame1Activity.this, GameSelectActivity.class);
-        intent.putExtra("roomCode", roomCode);
-        intent.putExtra("userId", userId);
-        startActivity(intent);
-        finish();
+        Toast.makeText(this, "Game finished, heading back to the lobby…", Toast.LENGTH_SHORT).show();
+        handler.postDelayed(() -> NavigationUtils.returnToLobby(this, roomCode, userId, username), 5000);
     }
 
     private void activateBlocker(String blockerKey, Button button) {
@@ -146,7 +167,7 @@ public class Minigame1Activity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firebase", blockerKey + " set to true");
                     disableButtonForUser(button);
-                    resetBlockerState(blockerKey); // ✅ Reset blocker after 2s for other players
+                    resetBlockerState(blockerKey);
                 })
                 .addOnFailureListener(e -> Log.e("FirebaseError", "Failed to update " + blockerKey, e));
     }
@@ -191,7 +212,7 @@ public class Minigame1Activity extends AppCompatActivity {
                     button.setBackgroundTintList(ContextCompat.getColorStateList(Minigame1Activity.this, R.color.grey));
 
                     handler.postDelayed(() -> {
-                        if (!button.getText().toString().matches("\\d+")) { // ✅ If no countdown, turn green
+                        if (!button.getText().toString().matches("\\d+")) {
                             button.setEnabled(true);
                             button.setBackgroundTintList(ContextCompat.getColorStateList(Minigame1Activity.this, R.color.green));
                         }

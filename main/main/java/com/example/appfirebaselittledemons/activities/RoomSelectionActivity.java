@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,8 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.appfirebaselittledemons.R;
 import com.example.appfirebaselittledemons.adapters.RoomAdapter;
 import com.example.appfirebaselittledemons.firebase.FirebaseDataManager;
-import com.example.appfirebaselittledemons.models.Rooms;
-import java.util.List;
+import com.example.appfirebaselittledemons.utils.MusicManager;
 
 public class RoomSelectionActivity extends AppCompatActivity {
     private RecyclerView recyclerViewRooms;
@@ -34,9 +34,31 @@ public class RoomSelectionActivity extends AppCompatActivity {
 
         buttonBack = findViewById(R.id.buttonBack);
         buttonBack.setOnClickListener(v -> finish());
+        findViewById(R.id.button_settings).setOnClickListener(v -> showSettingsDialog());
 
         dataManager = new FirebaseDataManager();
         loadRooms();
+    }
+
+    private void showSettingsDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.settings_dialog, null);
+        Switch musicSwitch = dialogView.findViewById(R.id.switch_music);
+
+        musicSwitch.setChecked(MusicManager.isMusicPlaying());
+
+        musicSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && !MusicManager.isMusicPlaying()) {
+                MusicManager.startMusic(this);
+            } else {
+                MusicManager.stopMusic();
+            }
+        });
+
+        new AlertDialog.Builder(this)
+                .setTitle("Settings")
+                .setView(dialogView)
+                .setPositiveButton("Close", null)
+                .show();
     }
 
     private void loadRooms() {

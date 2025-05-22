@@ -15,11 +15,15 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.appfirebaselittledemons.R;
 import com.example.appfirebaselittledemons.customviews.Minigame4View;
 import com.example.appfirebaselittledemons.utils.FirebaseUtils;
+import com.example.appfirebaselittledemons.utils.NavigationUtils;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Minigame4Activity extends AppCompatActivity implements SensorEventListener {
@@ -27,31 +31,39 @@ public class Minigame4Activity extends AppCompatActivity implements SensorEventL
     private Minigame4View minigameView;
     private SensorManager sensorManager;
     private Sensor accelerometer;
-    private String roomCode, userId;
+    private String roomCode, userId, username;
     private ImageView bombImage;
     private ProgressBar loadingIndicator;
     private int tapCount = 0;
     private final int TAP_GOAL = 10;
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minigame4);
 
-        roomCode = getIntent().getStringExtra("roomCode");
-        userId = getIntent().getStringExtra("userId");
+
+        if (getIntent() != null && getIntent().hasExtra("roomCode") && getIntent().hasExtra("userId")) {
+            roomCode = getIntent().getStringExtra("roomCode");
+            userId = getIntent().getStringExtra("userId");
+            username = getIntent().getStringExtra("username");
+        } else {
+            Toast.makeText(this, "Room data missing!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         FirebaseUtils.monitorPlayerStatus(this, roomCode, userId);
 
-        // Initialize views
-        minigameView = findViewById(R.id.gameView); // ✅ FIX: Must be initialized before listeners
+
+        minigameView = findViewById(R.id.gameView);
         bombImage = findViewById(R.id.bombImage);
         loadingIndicator = findViewById(R.id.loadingIndicator);
 
         bombImage.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.VISIBLE);
 
-        // Safe to use minigameView now
         minigameView.setBallInHoleListener(() -> runOnUiThread(() -> {
             bombImage.setVisibility(View.VISIBLE);
             Toast.makeText(this, "Hole reached! Tap to activate!", Toast.LENGTH_SHORT).show();
@@ -66,11 +78,12 @@ public class Minigame4Activity extends AppCompatActivity implements SensorEventL
                 bombImage.setVisibility(View.GONE);
                 tapCount = 0;
                 shakeScreen();
-                new Handler().postDelayed(() -> minigameView.resetBall(), 500);
+                new Handler().postDelayed(() -> minigameView.resetBallAndMaze(), 500);
+
             }
         });
 
-        // Sensor setup
+
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager != null) {
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -106,6 +119,12 @@ public class Minigame4Activity extends AppCompatActivity implements SensorEventL
         }
     }
 
+    private void endMinigame() {
+        Toast.makeText(this, "Game finished, heading back to the lobby…", Toast.LENGTH_SHORT).show();
+        handler.postDelayed(() -> NavigationUtils.returnToLobby(this, roomCode, userId, username), 5000);
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -132,6 +151,5 @@ public class Minigame4Activity extends AppCompatActivity implements SensorEventL
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 }

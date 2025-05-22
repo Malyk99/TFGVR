@@ -28,7 +28,10 @@ public class FirebaseDataManager {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Rooms> roomList = new ArrayList<>();
                 for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
-                    // ✅ Manually handle HashMap conversion
+                    // ✅ Skip if private is explicitly true
+                    Boolean isPrivate = roomSnapshot.child("private").getValue(Boolean.class);
+                    if (Boolean.TRUE.equals(isPrivate)) continue;
+
                     Rooms room = roomSnapshot.getValue(Rooms.class);
                     if (room != null) {
                         if (roomSnapshot.child("players").exists()) {

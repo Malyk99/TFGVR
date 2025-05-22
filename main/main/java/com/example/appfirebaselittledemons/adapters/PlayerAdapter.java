@@ -11,7 +11,7 @@ import com.example.appfirebaselittledemons.models.Players;
 import java.util.List;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder> {
-    private final List<Players> playerList;
+    private List<Players> playerList;
 
     public PlayerAdapter(List<Players> playerList) {
         this.playerList = playerList;
@@ -34,6 +34,10 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
     @Override
     public int getItemCount() {
         return playerList.size();
+    }
+
+    public void updateData(List<Players> newList) {
+        this.playerList = newList;
     }
 
     public static class PlayerViewHolder extends RecyclerView.ViewHolder {

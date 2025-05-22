@@ -3,26 +3,29 @@ package com.example.appfirebaselittledemons.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.appfirebaselittledemons.R;
 import com.example.appfirebaselittledemons.utils.FirebaseUtils;
+import com.example.appfirebaselittledemons.utils.NavigationUtils;
 import com.google.firebase.database.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class Minigame3Activity extends AppCompatActivity {
-    private String roomCode, userId;
+    private String roomCode, userId, username;
     private TextView textCountdown, textRound, textPressCount;
-    private Button buttonBack;
     private GridLayout gridButtons;
     private DatabaseReference minigameRef, playersRef;
     private int round = 1;
@@ -31,7 +34,7 @@ public class Minigame3Activity extends AppCompatActivity {
     private int pressesLeft;
     private Set<String> selectedButtons = new HashSet<>();
     private boolean gameReset = false;
-
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class Minigame3Activity extends AppCompatActivity {
         if (getIntent() != null && getIntent().hasExtra("roomCode") && getIntent().hasExtra("userId")) {
             roomCode = getIntent().getStringExtra("roomCode");
             userId = getIntent().getStringExtra("userId");
+            username = getIntent().getStringExtra("username");
         } else {
             Toast.makeText(this, "Room data missing!", Toast.LENGTH_SHORT).show();
             finish();
@@ -53,8 +57,6 @@ public class Minigame3Activity extends AppCompatActivity {
         textRound = findViewById(R.id.textRound);
         textPressCount = findViewById(R.id.textPressCount);
         gridButtons = findViewById(R.id.gridButtons);
-        buttonBack = findViewById(R.id.buttonBack);
-        buttonBack.setOnClickListener(v -> finish());
 
         minigameRef = FirebaseDatabase.getInstance()
                 .getReference("rooms")
@@ -92,7 +94,6 @@ public class Minigame3Activity extends AppCompatActivity {
                 .child("minigame3")
                 .child("round" + round);
 
-        // Check if the button was already selected by another player
         roundRef.child("chosenBy").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -109,15 +110,9 @@ public class Minigame3Activity extends AppCompatActivity {
                 }
 
                 if (!alreadyTaken) {
-                    // Mark the button as chosen by this player
-                    roundRef.child("chosenBy").child(userId)
-                            .push().setValue(index);
+                    roundRef.child("chosenBy").child(userId).push().setValue(index);
+                    roundRef.child("targetStates").child("btn" + index).setValue(false);
 
-                    // Update targetStates to false (disabled)
-                    roundRef.child("targetStates").child("btn" + index)
-                            .setValue(false);
-
-                    // UI feedback
                     selectedButtons.add("btn" + index);
                     gridButtons.getChildAt(index).setEnabled(false);
                     gridButtons.getChildAt(index).setBackgroundColor(getResources().getColor(R.color.grey));
@@ -135,7 +130,6 @@ public class Minigame3Activity extends AppCompatActivity {
         });
     }
 
-
     private void calculatePressLimit() {
         playersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -143,23 +137,27 @@ public class Minigame3Activity extends AppCompatActivity {
                 long playerCount = snapshot.getChildrenCount();
 
                 if (!gameReset) {
-                    gameReset = true; // Set flag so we only reset once
+                    gameReset = true;
 
-                    // Clear old game data
-                    DatabaseReference minigame3Ref = FirebaseDatabase.getInstance()
+                    DatabaseReference roundDataRef = FirebaseDatabase.getInstance()
                             .getReference("rooms")
                             .child(roomCode)
                             .child("minigames")
                             .child("minigame3");
 
-                    minigame3Ref.removeValue().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            setPressLimitAndStartRound(playerCount);
-                        } else {
-                            Toast.makeText(Minigame3Activity.this, "Failed to reset minigame data", Toast.LENGTH_SHORT).show();
+                    // Borra solo los datos de rondas previas, pero no el gameState ni otros flags globales
+                    roundDataRef.getRef().get().addOnSuccessListener(roundSnapshot -> {
+                        for (DataSnapshot child : roundSnapshot.getChildren()) {
+                            if (child.getKey().startsWith("round")) {
+                                child.getRef().removeValue();
+                            }
                         }
+                        setPressLimitAndStartRound(playerCount);
+                    }).addOnFailureListener(e -> {
+                        Toast.makeText(Minigame3Activity.this, "Failed to clean old round data", Toast.LENGTH_SHORT).show();
                     });
-                } else {
+                }
+                else {
                     setPressLimitAndStartRound(playerCount);
                 }
             }
@@ -170,6 +168,7 @@ public class Minigame3Activity extends AppCompatActivity {
             }
         });
     }
+
     private void setPressLimitAndStartRound(long playerCount) {
         if (playerCount == 2) pressesLeft = 6;
         else if (playerCount == 3) pressesLeft = 3;
@@ -183,14 +182,10 @@ public class Minigame3Activity extends AppCompatActivity {
         startRound();
     }
 
-
-
-
     private void startRound() {
         textRound.setText("Round " + round);
         textPressCount.setText(String.valueOf(pressesLeft));
         selectedButtons.clear();
-
 
         for (int i = 0; i < gridButtons.getChildCount(); i++) {
             Button btn = (Button) gridButtons.getChildAt(i);
@@ -211,7 +206,9 @@ public class Minigame3Activity extends AppCompatActivity {
                 for (int i = 0; i < gridButtons.getChildCount(); i++) {
                     gridButtons.getChildAt(i).setEnabled(false);
                 }
+
                 textCountdown.setText("Next round in 10s");
+
                 new CountDownTimer(10000, 1000) {
                     @Override
                     public void onTick(long l) {
@@ -233,12 +230,9 @@ public class Minigame3Activity extends AppCompatActivity {
     }
 
     private void endMinigame() {
-        Toast.makeText(this, "Minigame Over!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(Minigame3Activity.this, GameSelectActivity.class);
-        intent.putExtra("roomCode", roomCode);
-        intent.putExtra("userId", userId);
-        startActivity(intent);
-        finish();
+        Toast.makeText(this, "Game finished, heading back to the lobby…", Toast.LENGTH_SHORT).show();
+        handler.postDelayed(() -> NavigationUtils.returnToLobby(this, roomCode, userId, username), 5000);
+
     }
 
     private void setupFirebaseButtonListener(int roundNumber) {
@@ -270,5 +264,4 @@ public class Minigame3Activity extends AppCompatActivity {
             }
         });
     }
-
 }

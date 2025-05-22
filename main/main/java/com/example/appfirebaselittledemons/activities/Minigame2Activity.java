@@ -4,47 +4,61 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.appfirebaselittledemons.R;
 import com.example.appfirebaselittledemons.utils.FirebaseUtils;
+import com.example.appfirebaselittledemons.utils.NavigationUtils;
 import com.google.firebase.database.*;
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
 public class Minigame2Activity extends AppCompatActivity {
-    private String roomCode, userId;
+    private String roomCode, userId, username;
     private DatabaseReference minigameRef, countdownRef;
     private View movingBlock;
-    private Button buttonLeft, buttonRight, buttonBack;
+    private Button buttonLeft, buttonRight;
     private TextView textCountdown;
     private int blockPosition = 0;
-    private int positionIncrement = 10; // Default movement increment
+    private int positionIncrement = 10;
     private CountDownTimer countDownTimer;
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // Set landscape mode
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_minigame2);
 
-        // Retrieve roomCode and userId
+        // Disable back button
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+            }
+        });
+
         if (getIntent() != null && getIntent().hasExtra("roomCode") && getIntent().hasExtra("userId")) {
             roomCode = getIntent().getStringExtra("roomCode");
             userId = getIntent().getStringExtra("userId");
+            username = getIntent().getStringExtra("username");
         } else {
             Toast.makeText(this, "Room data missing!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // Start kicked player listener
         FirebaseUtils.monitorPlayerStatus(this, roomCode, userId);
 
-        // Firebase References
         minigameRef = FirebaseDatabase.getInstance()
                 .getReference("rooms")
                 .child(roomCode)
@@ -59,31 +73,32 @@ public class Minigame2Activity extends AppCompatActivity {
                 .child("minigame2")
                 .child("minigame2Countdown");
 
-        // Initialize UI Components
         textCountdown = findViewById(R.id.textCountdown);
         movingBlock = findViewById(R.id.movingBlock);
         buttonLeft = findViewById(R.id.buttonLeft);
         buttonRight = findViewById(R.id.buttonRight);
-        buttonBack = findViewById(R.id.buttonBack);
 
-        // Set Click Listeners
         buttonLeft.setOnClickListener(v -> updateBlockPosition(-positionIncrement));
         buttonRight.setOnClickListener(v -> updateBlockPosition(positionIncrement));
-        buttonBack.setOnClickListener(v -> navigateBack());
 
-        // Listen for block position updates
         adjustPositionIncrement();
         listenForBlockUpdates();
 
-        // Start Countdown Timer
         startCountdown();
     }
 
     private void updateBlockPosition(int delta) {
         int newPosition = blockPosition + delta;
+
+        if (newPosition < -100 || newPosition > 100) {
+            int buttonId = delta < 0 ? R.id.buttonLeft : R.id.buttonRight;
+            Button pressedButton = findViewById(buttonId);
+            Animation blink = AnimationUtils.loadAnimation(this, R.anim.blink);
+            pressedButton.startAnimation(blink);
+            return;
+        }
         minigameRef.setValue(newPosition)
-                .addOnSuccessListener(aVoid -> Log.d("Firebase", "Position updated: " + newPosition))
-                .addOnFailureListener(e -> Log.e("FirebaseError", "Failed to update position", e));
+               .addOnFailureListener(e -> Log.e("FirebaseError", "Failed to update position", e));
     }
 
     private void listenForBlockUpdates() {
@@ -179,15 +194,7 @@ public class Minigame2Activity extends AppCompatActivity {
     }
 
     private void endMinigame() {
-        Toast.makeText(this, "Minigame Over!", Toast.LENGTH_SHORT).show();
-        navigateBack();
-    }
-
-    private void navigateBack() {
-        Intent intent = new Intent(Minigame2Activity.this, GameSelectActivity.class);
-        intent.putExtra("roomCode", roomCode);
-        intent.putExtra("userId", userId);
-        startActivity(intent);
-        finish();
+        Toast.makeText(this, "Game finished, heading back to the lobby…", Toast.LENGTH_SHORT).show();
+        handler.postDelayed(() -> NavigationUtils.returnToLobby(Minigame2Activity.this, roomCode, userId, username), 5000);
     }
 }

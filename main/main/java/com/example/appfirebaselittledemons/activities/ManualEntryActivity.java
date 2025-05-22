@@ -1,17 +1,20 @@
 package com.example.appfirebaselittledemons.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.appfirebaselittledemons.R;
 import com.example.appfirebaselittledemons.firebase.FirebaseAdminManager;
 import com.example.appfirebaselittledemons.firebase.FirebaseDataManager;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.appfirebaselittledemons.utils.MusicManager;
 
 public class ManualEntryActivity extends AppCompatActivity {
     private EditText usernameInput, roomCodeInput;
@@ -26,6 +29,7 @@ public class ManualEntryActivity extends AppCompatActivity {
         usernameInput = findViewById(R.id.usernameInput);
         roomCodeInput = findViewById(R.id.roomCodeInput);
         Button joinRoomButton = findViewById(R.id.buttonJoinRoom);
+        findViewById(R.id.button_settings).setOnClickListener(v -> showSettingsDialog());
 
         adminManager = new FirebaseAdminManager();
         dataManager = new FirebaseDataManager();
@@ -38,6 +42,27 @@ public class ManualEntryActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+    }
+
+    private void showSettingsDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.settings_dialog, null);
+        Switch musicSwitch = dialogView.findViewById(R.id.switch_music);
+
+        musicSwitch.setChecked(MusicManager.isMusicPlaying());
+
+        musicSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked && !MusicManager.isMusicPlaying()) {
+                MusicManager.startMusic(this);
+            } else {
+                MusicManager.stopMusic();
+            }
+        });
+
+        new AlertDialog.Builder(this)
+                .setTitle("Settings")
+                .setView(dialogView)
+                .setPositiveButton("Close", null)
+                .show();
     }
 
     public void onJoinRoom(View view) {
@@ -103,55 +128,7 @@ public class ManualEntryActivity extends AppCompatActivity {
                 });
             }
         });
-        /*dataManager.checkRoomExists(roomCode, exists -> {
-            if (exists) {
-                Log.d("ManualEntry", "Room exists. Checking player count...");
 
-                FirebaseDatabase.getInstance().getReference("rooms")
-                        .child(roomCode)
-                        .child("players")
-                        .get()
-                        .addOnSuccessListener(snapshot -> {
-                            long playerCount = snapshot.getChildrenCount();
-                            Log.d("ManualEntry", "Player count: " + playerCount);
-
-                            if (playerCount >= 5) {
-                                Toast.makeText(this, "Room is full (max 5 players)", Toast.LENGTH_SHORT).show();
-                                Log.w("ManualEntry", "Join denied. Room is full.");
-                                return;
-                            }
-
-                            Log.d("ManualEntry", "Room has space. Adding player: " + username);
-                            dataManager.addPlayerToRoom(roomCode, username, new FirebaseDataManager.OnPlayerAddedListener() {
-                                @Override
-                                public void onSuccess(String playerId) {
-                                    Log.d("ManualEntry", "Player added successfully. ID: " + playerId);
-                                    Toast.makeText(ManualEntryActivity.this, "Joined room as Player", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(ManualEntryActivity.this, WaitingLobbyActivity.class);
-                                    intent.putExtra("roomCode", roomCode);
-                                    intent.putExtra("username", username);
-                                    intent.putExtra("userId", playerId);
-                                    startActivity(intent);
-                                    finish();
-                                }
-
-                                @Override
-                                public void onFailure(Exception e) {
-                                    Log.e("ManualEntry", "Failed to add player", e);
-                                    Toast.makeText(ManualEntryActivity.this, "Error joining room", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e("ManualEntry", "Failed to get player count", e);
-                            Toast.makeText(this, "Error checking room capacity", Toast.LENGTH_SHORT).show();
-                        });
-
-            } else {
-                Log.w("ManualEntry", "Room does not exist: " + roomCode);
-                Toast.makeText(ManualEntryActivity.this, "Room not found!", Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
 
 }
