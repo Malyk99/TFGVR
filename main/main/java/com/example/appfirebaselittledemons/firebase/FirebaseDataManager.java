@@ -28,7 +28,7 @@ public class FirebaseDataManager {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Rooms> roomList = new ArrayList<>();
                 for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
-                    // ✅ Skip if private is explicitly true
+
                     Boolean isPrivate = roomSnapshot.child("private").getValue(Boolean.class);
                     if (Boolean.TRUE.equals(isPrivate)) continue;
 
@@ -56,6 +56,40 @@ public class FirebaseDataManager {
             }
         });
     }
+
+    /* muestra todas las salas incluso privadas al admin*/
+    public void adminFetchRooms(OnRoomsFetchedListener listener) {
+        firebaseRepository.getRoomsReference().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Rooms> roomList = new ArrayList<>();
+                for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
+                    Rooms room = roomSnapshot.getValue(Rooms.class);
+                    if (room != null) {
+                        if (roomSnapshot.child("players").exists()) {
+                            HashMap<String, Players> playerMap = new HashMap<>();
+                            for (DataSnapshot playerSnapshot : roomSnapshot.child("players").getChildren()) {
+                                Players player = playerSnapshot.getValue(Players.class);
+                                if (player != null) {
+                                    playerMap.put(playerSnapshot.getKey(), player);
+                                }
+                            }
+                            room.setPlayers(playerMap);
+                        }
+                        roomList.add(room);
+                    }
+                }
+                listener.onRoomsFetched(roomList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("FirebaseError", "Error retrieving rooms: " + error.getMessage());
+            }
+        });
+    }
+
+
 
 
 

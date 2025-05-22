@@ -1,12 +1,12 @@
 package com.example.appfirebaselittledemons.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.view.View;
@@ -23,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.appfirebaselittledemons.R;
 import com.example.appfirebaselittledemons.customviews.Minigame4View;
 import com.example.appfirebaselittledemons.utils.FirebaseUtils;
-import com.example.appfirebaselittledemons.utils.NavigationUtils;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Minigame4Activity extends AppCompatActivity implements SensorEventListener {
@@ -37,12 +36,12 @@ public class Minigame4Activity extends AppCompatActivity implements SensorEventL
     private int tapCount = 0;
     private final int TAP_GOAL = 10;
     private final Handler handler = new Handler();
+    private CountDownTimer gameTimer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minigame4);
-
 
         if (getIntent() != null && getIntent().hasExtra("roomCode") && getIntent().hasExtra("userId")) {
             roomCode = getIntent().getStringExtra("roomCode");
@@ -55,7 +54,6 @@ public class Minigame4Activity extends AppCompatActivity implements SensorEventL
         }
 
         FirebaseUtils.monitorPlayerStatus(this, roomCode, userId);
-
 
         minigameView = findViewById(R.id.gameView);
         bombImage = findViewById(R.id.bombImage);
@@ -79,15 +77,15 @@ public class Minigame4Activity extends AppCompatActivity implements SensorEventL
                 tapCount = 0;
                 shakeScreen();
                 new Handler().postDelayed(() -> minigameView.resetBallAndMaze(), 500);
-
             }
         });
-
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager != null) {
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         }
+
+        startGameTimer();
     }
 
     private void triggerBomb() {
@@ -120,9 +118,28 @@ public class Minigame4Activity extends AppCompatActivity implements SensorEventL
     }
 
     private void endMinigame() {
-        Toast.makeText(this, "Game finished, heading back to the lobby…", Toast.LENGTH_SHORT).show();
-        handler.postDelayed(() -> NavigationUtils.returnToLobby(this, roomCode, userId, username), 5000);
+        FirebaseDatabase.getInstance()
+                .getReference("rooms")
+                .child(roomCode)
+                .child("minigames")
+                .child("minigame4")
+                .child("gameState")
+                .setValue("finished");
+    }
 
+    private void startGameTimer() {
+        gameTimer = new CountDownTimer(60000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                // Optional: show remaining time
+            }
+
+            @Override
+            public void onFinish() {
+                Toast.makeText(Minigame4Activity.this, "Game time over!", Toast.LENGTH_SHORT).show();
+                endMinigame();
+            }
+        }.start();
     }
 
     @Override
@@ -137,6 +154,9 @@ public class Minigame4Activity extends AppCompatActivity implements SensorEventL
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
+        if (gameTimer != null) {
+            gameTimer.cancel();
+        }
     }
 
     @Override

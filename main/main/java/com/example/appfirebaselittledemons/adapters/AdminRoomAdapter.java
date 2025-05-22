@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.appfirebaselittledemons.R;
 import com.example.appfirebaselittledemons.models.Rooms;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,16 +46,19 @@ public class AdminRoomAdapter extends RecyclerView.Adapter<AdminRoomAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Rooms room = roomList.get(position);
         String roomId = String.valueOf(room.getId());
+
         holder.textRoomId.setText("Room ID: " + roomId);
+
+
+        holder.checkBox.setOnCheckedChangeListener(null);
         holder.checkBox.setChecked(selectedRoomIds.contains(roomId));
 
         holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) selectedRoomIds.add(roomId);
             else selectedRoomIds.remove(roomId);
-            selectionListener.onSelectionChanged(selectedRoomIds);
+            selectionListener.onSelectionChanged(new HashSet<>(selectedRoomIds));
         });
 
-        // ✅ Handle item click to open player management view
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {
                 clickListener.onRoomClicked(roomId);
@@ -69,12 +71,22 @@ public class AdminRoomAdapter extends RecyclerView.Adapter<AdminRoomAdapter.View
         return roomList.size();
     }
 
-    public List<Rooms> getSelectedRooms() {
-        return roomList;
+    public void selectAllRooms() {
+        selectedRoomIds.clear();
+        for (Rooms room : roomList) {
+            selectedRoomIds.add(String.valueOf(room.getId()));
+        }
+        notifyDataSetChanged();
+        selectionListener.onSelectionChanged(new HashSet<>(selectedRoomIds));
+    }
+
+    public Set<String> getSelectedRoomIds() {
+        return selectedRoomIds;
     }
 
     public void removeRoomById(String roomId) {
         roomList.removeIf(room -> String.valueOf(room.getId()).equals(roomId));
+        selectedRoomIds.remove(roomId);
         notifyDataSetChanged();
     }
 

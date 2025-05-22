@@ -48,7 +48,6 @@ public class Minigame1Activity extends AppCompatActivity {
 
         FirebaseUtils.monitorPlayerStatus(this, roomCode, userId);
 
-        // ✅ Firebase References
         minigameRef = FirebaseDatabase.getInstance()
                 .getReference("rooms")
                 .child(roomCode)
@@ -57,28 +56,23 @@ public class Minigame1Activity extends AppCompatActivity {
 
         countdownRef = minigameRef.child("minigame1Countdown");
 
-        // ✅ Initialize UI Components
         textCountdown = findViewById(R.id.textCountdown);
         buttonBlock1 = findViewById(R.id.buttonBlock1);
         buttonBlock2 = findViewById(R.id.buttonBlock2);
         buttonBlock3 = findViewById(R.id.buttonBlock3);
 
-        // ✅ Apply animations
         applyAnimation(buttonBlock1);
         applyAnimation(buttonBlock2);
         applyAnimation(buttonBlock3);
 
-        // ✅ Set Click Listeners
         buttonBlock1.setOnClickListener(v -> activateBlocker("blocker1", buttonBlock1));
         buttonBlock2.setOnClickListener(v -> activateBlocker("blocker2", buttonBlock2));
         buttonBlock3.setOnClickListener(v -> activateBlocker("blocker3", buttonBlock3));
 
-        // ✅ Listen for blocker state changes
         setupBlockerListener("blocker1", buttonBlock1);
         setupBlockerListener("blocker2", buttonBlock2);
         setupBlockerListener("blocker3", buttonBlock3);
 
-        // ✅ Start Countdown Timer
         startCountdown();
     }
 
@@ -104,7 +98,6 @@ public class Minigame1Activity extends AppCompatActivity {
         });
     }
 
-    /** ✅ Run countdown and update Firebase every second */
     private void beginCountdown(long timeRemaining) {
         countDownTimer = new CountDownTimer(timeRemaining * 1000, 1000) {
             @Override
@@ -117,49 +110,25 @@ public class Minigame1Activity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 countdownRef.setValue(0);
-                disableAllButtons(); // Optional
-                waitForGameFinishSignal();
+                disableAllButtons();
+                endMinigame();
             }
 
         }.start();
+    }
+    private void endMinigame() {
+        FirebaseDatabase.getInstance()
+                .getReference("rooms")
+                .child(roomCode)
+                .child("minigames")
+                .child("minigame1")
+                .child("gameState")
+                .setValue("finished");
     }
     private void disableAllButtons() {
         buttonBlock1.setEnabled(false);
         buttonBlock2.setEnabled(false);
         buttonBlock3.setEnabled(false);
-    }
-
-    private void waitForGameFinishSignal() {
-        DatabaseReference gameStateRef = FirebaseDatabase.getInstance()
-                .getReference("rooms")
-                .child(roomCode)
-                .child("minigames")
-                .child("minigame1")
-                .child("gameState");
-
-        gameStateRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String state = snapshot.getValue(String.class);
-                if ("finished".equals(state)) {
-                    gameStateRef.removeEventListener(this); // cleanup
-                    Toast.makeText(Minigame1Activity.this, "Game finished, returning to lobby…", Toast.LENGTH_SHORT).show();
-                    handler.postDelayed(() -> NavigationUtils.returnToLobby(Minigame1Activity.this, roomCode, userId, username), 5000);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("FirebaseError", "Failed to listen for gameState change", error.toException());
-            }
-        });
-    }
-
-    /** ✅ End minigame with 5s delay and return to lobby */
-    private void endMinigame() {
-        Toast.makeText(this, "Game finished, heading back to the lobby…", Toast.LENGTH_SHORT).show();
-        handler.postDelayed(() -> NavigationUtils.returnToLobby(this, roomCode, userId, username), 5000);
     }
 
     private void activateBlocker(String blockerKey, Button button) {

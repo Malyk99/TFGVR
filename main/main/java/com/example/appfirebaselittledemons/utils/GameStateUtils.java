@@ -3,6 +3,7 @@ package com.example.appfirebaselittledemons.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,8 +14,8 @@ import com.example.appfirebaselittledemons.activities.Minigame1Activity;
 import com.example.appfirebaselittledemons.activities.Minigame2Activity;
 import com.example.appfirebaselittledemons.activities.Minigame3Activity;
 import com.example.appfirebaselittledemons.activities.Minigame4Activity;
-import com.example.appfirebaselittledemons.activities.WaitingLobbyActivity;
 import com.google.firebase.database.*;
+import androidx.annotation.Nullable;
 
 public class GameStateUtils {
 
@@ -75,8 +76,13 @@ public class GameStateUtils {
 
                     else if ("finished".equals(state)) {
                         Log.d("GameStateDebug", "Minigame finished, returning to lobby.");
-                        NavigationUtils.returnToLobby(activity, roomCode, userId, username);
+                        Toast.makeText(activity, "Game finished! Returning to lobby...", Toast.LENGTH_SHORT).show();
+
+                        new Handler().postDelayed(() ->
+                                NavigationUtils.returnToLobby(activity, roomCode, userId, username), 5000
+                        );
                     }
+
                 }
 
                 @Override

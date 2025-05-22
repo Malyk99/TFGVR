@@ -56,13 +56,13 @@ public class AdminViewActivity extends AppCompatActivity {
     }
 
     private void loadRooms() {
-        dataManager.fetchRooms(roomList -> {
+        dataManager.adminFetchRooms(roomList -> {
             adapter = new AdminRoomAdapter(
                     this,
                     roomList,
                     this::deleteRoom,
                     this::updateSelectedRooms,
-                    this::onRoomClicked // ✅ Handles click-to-manage-players
+                    this::onRoomClicked
             );
             recyclerView.setAdapter(adapter);
         });
@@ -95,10 +95,8 @@ public class AdminViewActivity extends AppCompatActivity {
     }
 
     private void selectAllRooms() {
-        for (Rooms room : adapter.getSelectedRooms()) {
-            selectedRooms.add(String.valueOf(room.getId()));
-        }
-        adapter.notifyDataSetChanged();
+        adapter.selectAllRooms();
+        selectedRooms = adapter.getSelectedRoomIds();
         buttonDeleteSelected.setEnabled(true);
     }
 

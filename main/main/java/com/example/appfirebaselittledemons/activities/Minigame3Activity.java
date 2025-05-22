@@ -230,10 +230,15 @@ public class Minigame3Activity extends AppCompatActivity {
     }
 
     private void endMinigame() {
-        Toast.makeText(this, "Game finished, heading back to the lobby…", Toast.LENGTH_SHORT).show();
-        handler.postDelayed(() -> NavigationUtils.returnToLobby(this, roomCode, userId, username), 5000);
-
+        FirebaseDatabase.getInstance()
+                .getReference("rooms")
+                .child(roomCode)
+                .child("minigames")
+                .child("minigame3")
+                .child("gameState")
+                .setValue("finished");
     }
+
 
     private void setupFirebaseButtonListener(int roundNumber) {
         DatabaseReference roundRef = FirebaseDatabase.getInstance()
