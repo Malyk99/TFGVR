@@ -2,10 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="#121212"
     android:padding="16dp">
 
-    <!-- Countdown Timer at the Top Center -->
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/logo"
+        android:layout_marginBottom="14dp"
+        android:layout_marginRight="140dp"/>
+
     <TextView
         android:id="@+id/textCountdown"
         android:layout_width="wrap_content"
@@ -13,10 +20,11 @@
         android:text="60"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
 
-    <!-- Movable Block -->
     <View
         android:id="@+id/movingBlock"
         android:layout_width="50dp"
@@ -24,35 +32,31 @@
         android:background="@color/white"
         android:layout_centerInParent="true" />
 
-    <!-- Left Button (Move Left) -->
     <Button
         android:id="@+id/buttonLeft"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="130dp"
+        android:layout_height="70dp"
         android:text="Left"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#6200EE"
+        android:elevation="4dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:layout_marginEnd="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="80dp" />
 
-        android:layout_toLeftOf="@+id/buttonRight" />
-
-    <!-- Right Button (Move Right) -->
     <Button
         android:id="@+id/buttonRight"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="130dp"
+        android:layout_height="70dp"
         android:text="Right"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:layout_centerHorizontal="true" />
-
-    <!-- Back Button at Bottom Right -->
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#6200EE"
+        android:elevation="4dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="20dp" />
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="80dp" />
+
+
 </RelativeLayout>

@@ -2,8 +2,10 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.AppFirebaseLittleDemons" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
+        <!-- <item name="colorPrimary">@color/</item>-->
+        <item name="colorPrimary">@color/red</item>
+         <item name="android:fontFamily">@font/papyrus</item>
+     </style>
 
-    <style name="Theme.AppFirebaseLittleDemons" parent="Base.Theme.AppFirebaseLittleDemons" />
-</resources>
+     <style name="Theme.AppFirebaseLittleDemons" parent="Base.Theme.AppFirebaseLittleDemons" />
+ </resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="#121212">
+
+    <TextView
+        android:id="@+id/textRoomTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Players in Room"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewAdminPlayers"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/textRoomTitle"
+        android:layout_above="@id/buttonBack"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="20dp"
+        android:background="#1E1E1E" />
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="#6200EE"
+        android:textColor="#FFFFFF"
+        android:elevation="4dp" />
+</RelativeLayout>

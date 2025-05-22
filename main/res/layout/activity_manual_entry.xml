@@ -2,48 +2,81 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#121212"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center_horizontal">
+    android:padding="16dp">
 
-    <!-- Push Content Down -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="14dp">
+
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/logo"
+            android:layout_weight="1"
+            android:layout_gravity="start"
+            android:layout_marginRight="220dp"/>
+
+        <Button
+            android:id="@+id/button_settings"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/settings"
+            android:contentDescription="Settings"
+            android:layout_marginTop="0dp"/>
+    </LinearLayout>
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <EditText
         android:id="@+id/usernameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#424242"
         android:hint="Enter Username"
         android:maxLength="20"
         android:minHeight="48dp"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#B0B0B0" />
 
     <EditText
         android:id="@+id/roomCodeInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#424242"
         android:hint="Enter Room Code"
         android:inputType="number"
         android:maxLength="6"
         android:minHeight="48dp"
         android:padding="10dp"
-        android:layout_marginTop="8dp"/>
+        android:textColor="#FFFFFF"
+        android:textColorHint="#B0B0B0" />
 
     <Button
         android:id="@+id/buttonJoinRoom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#6200EE"
+        android:elevation="4dp"
         android:text="Join Room"
-        android:layout_marginTop="16dp"/>
+        android:textColor="#FFFFFF" />
 
-    <!-- Push Back Button to Bottom -->
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -54,9 +87,11 @@
             android:id="@+id/buttonBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back"
-            android:padding="8dp"
             android:layout_alignParentEnd="true"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp"
+            android:backgroundTint="#6200EE"
+            android:elevation="4dp"
+            android:text="Back"
+            android:textColor="#FFFFFF" />
     </RelativeLayout>
 </LinearLayout>

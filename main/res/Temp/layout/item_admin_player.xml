@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:gravity="center_vertical"
+    android:background="#1E1E1E">
+
+    <TextView
+        android:id="@+id/textUsername"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="Player"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <Button
+        android:id="@+id/buttonDeletePlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kick"
+        android:textSize="14sp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#F44336"
+        android:elevation="2dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"/>
+</LinearLayout>

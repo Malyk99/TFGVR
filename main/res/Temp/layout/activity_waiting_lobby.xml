@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center_horizontal"
+    android:background="#121212">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPlayers"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:background="#1E1E1E"
+        android:layout_marginBottom="24dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"/>
+
+    <Button
+        android:id="@+id/buttonReady"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ready"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:elevation="4dp"
+        android:layout_marginBottom="12dp"
+        android:paddingVertical="12dp"/>
+
+    <Button
+        android:id="@+id/buttonStartGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Game"
+        android:backgroundTint="#2196F3"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:enabled="false"
+        android:elevation="4dp"
+        android:layout_marginBottom="12dp"
+        android:paddingVertical="12dp"/>
+
+    <Button
+        android:id="@+id/buttonLeave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Leave Room"
+        android:backgroundTint="#F44336"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:elevation="4dp"
+        android:paddingVertical="12dp"/>
+</LinearLayout>

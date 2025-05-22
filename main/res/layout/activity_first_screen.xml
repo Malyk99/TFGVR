@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:gravity="center"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/black"
+android:padding="32dp">
+
+<TextView
+    android:id="@+id/textWelcome"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Little Demons"
+    android:textColor="#ffffff"
+    android:textSize="44sp"
+    android:layout_marginTop="24dp"
+    android:fontFamily="@font/papyrus" />
+
+    <VideoView
+        android:id="@+id/testVideo"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="00dp" />
+</LinearLayout>

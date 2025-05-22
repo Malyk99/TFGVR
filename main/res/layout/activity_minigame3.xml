@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#121212"
     android:padding="16dp">
 
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/logo"
+        android:layout_marginBottom="14dp"
+        android:layout_marginRight="140dp"/>
     <!-- Top Left: Press Count -->
     <LinearLayout
         android:id="@+id/pressInfoLayout"
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true">
 
         <TextView
@@ -19,7 +26,8 @@
             android:layout_height="wrap_content"
             android:text="Presses left this round:"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/textPressCount"
@@ -27,13 +35,14 @@
             android:layout_height="wrap_content"
             android:text="0"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
     <!-- Top Center: Round and Countdown -->
     <LinearLayout
         android:id="@+id/topCenterLayout"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -43,19 +52,20 @@
             android:id="@+id/textRound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Round 1"
+            android:text="Round 1     "
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/textCountdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Choose: 5s"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
-    <!-- Grid of Buttons -->
     <GridLayout
         android:id="@+id/gridButtons"
         android:layout_width="wrap_content"
@@ -66,13 +76,5 @@
         android:alignmentMode="alignMargins"
         android:useDefaultMargins="true" />
 
-    <!-- Bottom Right: Back Button -->
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
