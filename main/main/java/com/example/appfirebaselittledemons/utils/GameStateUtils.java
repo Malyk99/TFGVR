@@ -78,10 +78,23 @@ public class GameStateUtils {
                         Log.d("GameStateDebug", "Minigame finished, returning to lobby.");
                         Toast.makeText(activity, "Game finished! Returning to lobby...", Toast.LENGTH_SHORT).show();
 
+                        // Step 1: Clear gameState after 3 seconds
+                        new Handler().postDelayed(() -> {
+                            FirebaseDatabase.getInstance()
+                                    .getReference("rooms")
+                                    .child(roomCode)
+                                    .child("minigames")
+                                    .child(minigame)
+                                    .child("gameState")
+                                    .setValue(null);
+                        }, 3000);
+
+                        // Step 2: Return to lobby after 5 seconds
                         new Handler().postDelayed(() ->
                                 NavigationUtils.returnToLobby(activity, roomCode, userId, username), 5000
                         );
                     }
+
 
                 }
 

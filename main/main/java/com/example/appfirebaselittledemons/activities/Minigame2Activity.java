@@ -16,8 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.appfirebaselittledemons.R;
+import com.example.appfirebaselittledemons.firebase.FirebaseDataManager;
 import com.example.appfirebaselittledemons.utils.FirebaseUtils;
-import com.example.appfirebaselittledemons.utils.NavigationUtils;
 import com.google.firebase.database.*;
 
 import android.view.animation.Animation;
@@ -25,6 +25,8 @@ import android.view.animation.AnimationUtils;
 
 public class Minigame2Activity extends AppCompatActivity {
     private String roomCode, userId, username;
+    private TextView textPoints;
+    private FirebaseDataManager dataManager;
     private DatabaseReference minigameRef, countdownRef;
     private View movingBlock;
     private Button buttonLeft, buttonRight;
@@ -39,6 +41,9 @@ public class Minigame2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.activity_minigame2);
+
+        textPoints = findViewById(R.id.textPoints);
+        dataManager = new FirebaseDataManager();
 
         // Disable back button
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -184,6 +189,19 @@ public class Minigame2Activity extends AppCompatActivity {
                 endMinigame();
             }
         }.start();
+        dataManager.fetchMinigame2Points(roomCode, new FirebaseDataManager.OnPointsFetchedListener() {
+            @Override
+            public void onPointsFetched(int points) {
+                textPoints.setText("Points: " + points*-1);
+            }
+
+            @Override
+            public void onFetchFailed(String error) {
+                textPoints.setText("Error loading score");
+                Log.e("Minigame2Points", error);
+            }
+        });
+
     }
 
     private void resetBlockPosition() {

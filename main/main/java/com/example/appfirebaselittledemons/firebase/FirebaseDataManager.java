@@ -314,6 +314,42 @@ public class FirebaseDataManager {
                 .addOnFailureListener(e -> listener.onRoomCreated(false, null));
     }
 
+    public interface OnPointsFetchedListener {
+        void onPointsFetched(int points);
+        void onFetchFailed(String error);
+    }
+
+    public void fetchMinigame2Points(String roomCode, OnPointsFetchedListener listener) {
+        firebaseRepository.getRoomsReference()
+                .child(roomCode)
+                .child("minigames")
+                .child("minigame2")
+                .child("points")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            Integer points = snapshot.getValue(Integer.class);
+                            if (points != null) {
+                                listener.onPointsFetched(points);
+                            } else {
+                                listener.onFetchFailed("Points value is null");
+                            }
+                        } else {
+                            listener.onFetchFailed("No points data found");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        listener.onFetchFailed("Firebase error: " + error.getMessage());
+                    }
+                });
+    }
+
+
+
+
 
 
 
