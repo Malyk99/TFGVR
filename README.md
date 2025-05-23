@@ -1,62 +1,65 @@
-# 🕹️ Little Demons - Firebase Multiplayer Game
+# 🕹️ Little Demons - Juego Multijugador con Firebase
 
-**Little Demons** is a real-time multiplayer mobile game that connects Android clients and a Unity-based game using Firebase Realtime Database. This project was developed as a final degree project by ALVYK Games S.L.
-
----
-
-## 📦 Project Structure
-
-### 🔹 Android App (Java)
-- **Activities** for room joining, waiting lobbies, and minigames.
-- **Firebase integration** using Realtime Database.
-- **Admin features**: Create/delete rooms, manage players, and monitor game state.
-- **Minigames**: Interactive mini experiences that sync with the Unity game.
-
-### 🔹 Unity Game (C#)
-- Syncs with Firebase to:
-  - Listen for game state changes
-  - Receive player actions
-  - Trigger in-game events
-- Players control parts of the gameplay using physical or on-screen controls.
-- VR features and visual polish for immersive gameplay.
+**Little Demons** es un juego multijugador en tiempo real que conecta una app Android con un videojuego desarrollado en Unity mediante Firebase Realtime Database. Este proyecto ha sido desarrollado como Trabajo de Fin de Grado por ALVYK Games S.L.
 
 ---
 
-## 🛠️ Technologies Used
+## 📦 Estructura del Proyecto
 
-- **Firebase Realtime Database** – Multiplayer sync and data storage
-- **Android Studio** – Java app for game control and UI
-- **Unity (C#)** – Core game logic and 3D interaction
-- **Firebase SDKs** for Unity and Android
-- **RecyclerView** and custom adapters for dynamic lists
-- **Material UI + Custom XML layouts**
+### 🔹 Aplicación Android (Java)
+- **Activities** para unirse a salas, ver el lobby y participar en minijuegos.
+- **Integración con Firebase** usando Realtime Database.
+- **Funciones para administradores**: crear/borrar salas, gestionar jugadores y supervisar el estado de la partida.
+- **Minijuegos** interactivos sincronizados con Unity.
 
----
+### 🔹 Juego en Unity (C#) con Realidad Virtual
 
-## 🚀 How It Works
+La experiencia de juego se desarrolla en **Unity**, y está diseñada para ser compatible con **dispositivos de realidad virtual (VR)**. El jugador principal entra en un entorno 3D inmersivo donde puede interactuar con el mundo del juego utilizando mandos de VR y controladores de movimiento.
 
-1. **Room Creation**
-   - Admins or players create a game room (with optional privacy).
-   - A 6-digit `roomCode` is generated and saved in Firebase.
+#### Características VR destacadas:
+- **Compatibilidad con visores VR** (como Oculus Quest o similares mediante Unity XR).
+- **Interacciones físicas**: El jugador puede disparar flechas, recoger objetos o moverse por escenarios diseñados en 3D.
+- **Jugabilidad asimétrica**: Mientras el jugador con visor VR actúa dentro del entorno virtual (por ejemplo, disparando a objetivos o esquivando obstáculos), los jugadores móviles participan a través de acciones que influyen en el mundo del jugador principal (como activar trampas o ayudar con pistas).
 
-2. **Join Game**
-   - Players join rooms via code or room list.
-   - They enter a waiting lobby and toggle "Ready" state.
-
-3. **Game Start**
-   - Once all players are ready, the admin (or system) starts the game.
-   - Unity detects the state change and begins the minigame.
-
-4. **Minigame Interaction**
-   - Android clients trigger interactions (buttons, gyroscope, etc.)
-   - Unity listens and responds in real time.
-
-5. **Game End**
-   - After completion, players are returned to the lobby.
+El diseño promueve una experiencia cooperativa y sincronizada entre dispositivos móviles y el jugador en VR, ofreciendo un enfoque original de interacción multiplataforma y multijugador.
 
 ---
 
-## 🔑 Firebase Structure (Simplified)
+## 🛠️ Tecnologías Utilizadas
+
+- **Firebase Realtime Database** – Sincronización multijugador y almacenamiento de datos
+- **Android Studio (Java)** – Aplicación móvil para control de juego e interfaz de usuario
+- **Unity (C#)** – Lógica central del juego y experiencia 3D
+- **SDKs de Firebase** para Unity y Android
+- **RecyclerView** y adaptadores personalizados
+- **Diseños XML personalizados + Material UI**
+
+---
+
+## 🚀 Funcionamiento General
+
+1. **Creación de Sala**
+   - Los administradores o jugadores crean una sala de juego (pública o privada).
+   - Se genera un código de 6 dígitos (`roomCode`) y se guarda en Firebase.
+
+2. **Unirse a la Partida**
+   - Los jugadores se unen a la sala mediante el código o seleccionándola de una lista.
+   - Acceden al lobby y marcan su estado como "Listo".
+
+3. **Inicio del Juego**
+   - Cuando todos están listos, el administrador (o el sistema) inicia el juego.
+   - Unity detecta el cambio de estado e inicia el minijuego.
+
+4. **Interacción en el Minijuego**
+   - Los jugadores en Android interactúan (botones, giroscopio, etc.).
+   - Unity escucha estos cambios y reacciona en tiempo real.
+
+5. **Fin del Juego**
+   - Al terminar, todos los jugadores regresan al lobby.
+
+---
+
+## 🔑 Estructura de Firebase (resumen)
 
 ```plaintext
 rooms/
