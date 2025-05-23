@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ArcheryController : MonoBehaviour
 {
@@ -7,6 +8,9 @@ public class ArcheryController : MonoBehaviour
     public GameObject Player;
 
     public GameObject SpawnPlatform;
+
+    public Text TimerText;
+    public Text PointText;
 
     private bool IsPlaying = false;
 
@@ -50,7 +54,7 @@ public class ArcheryController : MonoBehaviour
         int minutes = Mathf.FloorToInt(TurnTimer / 60);
         int seconds = Mathf.FloorToInt(TurnTimer % 60);
 
-        // TimerText.text = string.Format("Time Left: {0:00}:{1:00}", minutes, seconds);
+        TimerText.text = string.Format("Time Left: {0:00}:{1:00}", minutes, seconds);
 
         if (TurnTimer <= 0)
         {
@@ -67,5 +71,23 @@ public class ArcheryController : MonoBehaviour
         IsPlaying = false;
         Points = 0;
         TurnTimer = InitialTurnTimer;
+    }
+
+    public void AddPoints()
+    {
+        if (IsPlaying)
+        {
+            Points++;
+            PointText.text = "Points: " + Points;
+        }
+    }
+
+    public void SubPoints()
+    {
+        if (IsPlaying)
+        {
+            Points--;
+            PointText.text = "Points: " + Points;
+        }
     }
 }

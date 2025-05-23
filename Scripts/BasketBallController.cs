@@ -14,6 +14,8 @@ public class BasketBallController : MonoBehaviour
 
     Rigidbody BallRb1, BallRb2, BallRb3;
 
+    public AudioSource ReturnAudio;
+
     public Vector3 OriginalBallPosition1;
     public Vector3 OriginalBallPosition2;
     public Vector3 OriginalBallPosition3;
@@ -105,6 +107,8 @@ public class BasketBallController : MonoBehaviour
 
     public void ReturnToBallPosition(string Ball)
     {
+        ReturnAudio.PlayOneShot(ReturnAudio.clip);
+
         if (Ball == "Ball1")
         {
             Ball1.transform.position = OriginalBallPosition1;

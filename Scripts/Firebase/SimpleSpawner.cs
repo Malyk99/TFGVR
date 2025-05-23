@@ -5,8 +5,8 @@ public class SimpleSpawner : MonoBehaviour
 {
     [Header("Spawner Setup")]
     public Transform[] spawnPoints = new Transform[9];
-    public GameObject cubeBlue;
-    public GameObject cubeRed;
+    public GameObject goodTarget;
+    public GameObject badTarget;
 
     [Header("Audio")]
     public AudioClip spawnSound;
@@ -28,9 +28,9 @@ public class SimpleSpawner : MonoBehaviour
         {
             if (spawnPoints[i] == null) continue;
 
-            GameObject prefab = targetStates[i] ? cubeBlue : cubeRed;
-            GameObject obj = Instantiate(prefab, spawnPoints[i].position, Quaternion.identity);
-            obj.transform.localScale = Vector3.zero;
+            GameObject prefab = targetStates[i] ? goodTarget : badTarget;
+            GameObject obj = Instantiate(prefab, spawnPoints[i].position, prefab.transform.rotation);
+            obj.transform.localScale = prefab.transform.localScale;
 
             spawnedTargets[i] = obj;
             StartCoroutine(AnimateGrow(obj.transform, 0.2f));

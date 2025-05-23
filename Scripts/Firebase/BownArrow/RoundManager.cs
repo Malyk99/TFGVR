@@ -29,7 +29,6 @@ public class FirebaseRoundManager : MonoBehaviour
         {
             if (task.Result == DependencyStatus.Available)
             {
-                Debug.Log("? Firebase ready.");
                 StartCoroutine(WaitForRoomCode());
             }
             else
@@ -43,7 +42,6 @@ public class FirebaseRoundManager : MonoBehaviour
     {
         while (string.IsNullOrEmpty(RoomManagerCreate.CurrentRoomCode))
         {
-            Debug.Log("? Waiting for room code...");
             yield return null;
         }
 

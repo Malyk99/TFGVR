@@ -112,14 +112,12 @@ public class UiController : MonoBehaviour
     {
         if (OnLobby && !AllReady)
         {
-            Debug.Log("Entrado aquí.0");
             if (PlayerCount >= 1 && !Ready1) return;
             //if (PlayerCount >= 2 && !Ready2) return;
             //if (PlayerCount >= 3 && !Ready3) return;
             //if (PlayerCount >= 4 && !Ready4) return;
             //if (PlayerCount == 5 && !Ready5) return;
 
-            Debug.Log("Entrado aquí.");
             AllReady = true;
             StartLobbyGameButton.interactable = true;
         }
@@ -503,9 +501,9 @@ public class UiController : MonoBehaviour
 
     private void FillDictionary()
     {
-        MinigameExplanations["Basketball"] = "Basketball explanation";
-        MinigameExplanations["Pong"] = "Pong explanation";
-        MinigameExplanations["Archery"] = "Archery explanation";
-        MinigameExplanations["Puzzle"] = "Puzzle explanation";
+        MinigameExplanations["Basketball"] = "Grab the basketballs and score as many points as you can! Beware of the blocking demons tho...";
+        MinigameExplanations["Pong"] = "Swing the paddle and hit the ball! Hit the opposite wall as many times as you can to win, but be careful, the demons can control the other paddle";
+        MinigameExplanations["Archery"] = "Shoot the un-crossed targets! Be careful not to hit the rest, the demons control the targets positions!";
+        MinigameExplanations["Puzzle"] = "Build the puzzle as fast as you can! Beware of the little demons tho, they tend to be a little explosive...";
     }
 }

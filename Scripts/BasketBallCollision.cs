@@ -3,6 +3,7 @@ using UnityEngine;
 public class BasketBallCollision : MonoBehaviour
 {
     private string ObjectName;
+    public AudioSource SoundSource;
 
     private void Start()
     {
@@ -14,6 +15,7 @@ public class BasketBallCollision : MonoBehaviour
         if (other.gameObject.CompareTag("Pointer"))
         {
             BasketBallController.Instance.AddPoints();
+            SoundSource.PlayOneShot(SoundSource.clip);
             BasketBallController.Instance.ReturnToBallPosition(ObjectName);
         }
     }

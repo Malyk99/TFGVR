@@ -7,6 +7,13 @@ public class PongBallController : MonoBehaviour
     [SerializeField] private float Speed = 0;
     private Vector3 moveDirection;
 
+    [Header("Sound")]
+    public AudioSource SoundSource;
+    public AudioClip Tennis;
+    public AudioClip Bounce;
+    public AudioClip Score;
+    public AudioClip Miss;
+
     private void Awake()
     {
         if (Instance == null)
@@ -31,14 +38,25 @@ public class PongBallController : MonoBehaviour
         reflectDir.y = 0;
         moveDirection = reflectDir.normalized;
 
+        if (collision.gameObject.CompareTag("Paddle"))
+        {
+            SoundSource.PlayOneShot(Tennis);
+        }
+        else
+        {
+            SoundSource.PlayOneShot(Bounce);
+        }
+
         if (collision.gameObject.CompareTag("PongPointer"))
         {
             PongController.Instance.AddPoints();
+            SoundSource.PlayOneShot(Score);
         }
 
         if (collision.gameObject.CompareTag("PongMinusPointer"))
         {
             PongController.Instance.SubtractPoints();
+            SoundSource.PlayOneShot(Miss);
         }
     }
 

@@ -20,8 +20,6 @@ public class FirebaseBombSpawner : MonoBehaviour
 
     private void Start()
     {
-        Instantiate(bombPrefab, transform.position + Vector3.up * 5f, Quaternion.identity);
-
         dbRef = FirebaseDatabase.DefaultInstance.RootReference;
 
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
@@ -42,7 +40,6 @@ public class FirebaseBombSpawner : MonoBehaviour
     {
         while (string.IsNullOrEmpty(RoomManagerCreate.CurrentRoomCode))
         {
-            Debug.Log("? Waiting for room code...");
             yield return null;
         }
 
@@ -58,9 +55,7 @@ public class FirebaseBombSpawner : MonoBehaviour
         triggered = true;
         Debug.Log("?? Player triggered bomb spawner — game state set to inProgress");
 
-        // Set round state
-        dbRef.Child("rooms").Child(roomCode).Child("minigames").Child("minigame4").Child("state")
-            .SetValueAsync("inProgress");
+        
 
         StartListeningForSpawn();
     }

@@ -37,6 +37,12 @@ public class GameManager : MonoBehaviour
     private int P4RoundsWon = 0;
     private int P5RoundsWon = 0;
 
+    [Header("Sound")]
+    public AudioSource Source;
+    public AudioClip StartGame;
+    public AudioClip EndTurn;
+    public AudioClip EndGame;
+
     private void Awake()
     {
         if (Instance == null)
@@ -102,6 +108,8 @@ public class GameManager : MonoBehaviour
         {
             PuzzleController.Instance.StartMinigame();
         }
+
+        Source.PlayOneShot(StartGame);
     }
 
     public void StartMinigame(string Minigame) // Llamado desde Continueplaying();
@@ -125,6 +133,8 @@ public class GameManager : MonoBehaviour
         {
             PuzzleController.Instance.StartMinigame();
         }
+
+        Source.PlayOneShot(StartGame);
     }
 
     public void ContinuePlaying()
@@ -134,7 +144,14 @@ public class GameManager : MonoBehaviour
             UiController.Instance.DisableRoundResultsScreen();
         }
 
-        StartMinigame(ShuffledMinigames[Round]);
+        if (Round != -1)
+        {
+            StartMinigame(ShuffledMinigames[Round]);
+        }
+        else
+        {
+            StartMinigame();
+        }
     }
 
     public void OnTurnEnd(int Score)
@@ -150,6 +167,10 @@ public class GameManager : MonoBehaviour
         if (Round == -1)
         {
             EndResults.Add(PlayerNameList[TurnCount], Score);
+        }
+        else
+        {
+            Source.PlayOneShot(EndTurn);
         }
 
         TurnCount++;
@@ -224,6 +245,8 @@ public class GameManager : MonoBehaviour
     {
         PlayerNameList.Clear();
         EndResults.Clear();
+
+        Source.PlayOneShot(EndGame);
     }
 
     public int GetRound()

@@ -3,95 +3,67 @@ using UnityEngine.UI;
 using TMPro;
 using Firebase.Database;
 using Firebase.Extensions;
-using TMPro.EditorUtilities;
 using System.Collections.Generic;
 
 public class RoomManagerCreate : MonoBehaviour
 {
-    // public TMP_InputField usernameInput;
-    // public Button createRoomButton;
-
-    // TMP Text to display the generated room code to the user
     public TMP_Text roomCodeDisplay;
-
-    // Optional UI Text (non-TMP) to display error messages
     public Text errorMessageText;
 
-    // Firebase Database reference
+    // UI for privacy toggle
+    public Button privacyToggleButton;
+    public TMP_Text privacyToggleButtonText;
+
     private DatabaseReference dbReference;
 
-    // Global variable to store the room code (accessible by other scripts)
     public static string CurrentRoomCode { get; private set; }
 
     public string username = "Player 1";
+
+    [Header("Room Settings")]
+    public bool isPrivate = true;
 
     void Start()
     {
         dbReference = FirebaseDatabase.DefaultInstance.RootReference;
 
         if (errorMessageText != null)
-        {
             errorMessageText.text = "";
-        }
+
+        if (privacyToggleButtonText != null)
+            privacyToggleButtonText.text = isPrivate ? "Private" : "Public";
     }
 
     public void OnCreateRoomButtonPressed()
     {
-        /*
-        string username = usernameInput.text.Trim();
-        if (string.IsNullOrEmpty(username))
-        {
-            Debug.Log("Please enter a valid username.");
-            if (errorMessageText != null)
-            {
-                errorMessageText.text = "Please enter a valid username.";
-            }
-            return;
-        }
-        */
-
-        // Clear any previous error message.
         if (errorMessageText != null)
-        {
             errorMessageText.text = "";
-        }
 
-        // Generate a random 6-digit room code once.
         int randomRoomNumber = Random.Range(100000, 1000000);
         string roomCode = randomRoomNumber.ToString();
         Debug.Log("Generated Room Code: " + roomCode);
 
-        // Display the generated room code in the TMP text box.
         if (roomCodeDisplay != null)
-        {
             roomCodeDisplay.text = "Lobby Code: " + roomCode;
-        }
 
-        // Check if the room already exists in Firebase.
         dbReference.Child("rooms").Child(roomCode).GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted || task.Result == null)
             {
                 Debug.LogError("Error checking room existence: " + task.Exception);
                 if (errorMessageText != null)
-                {
                     errorMessageText.text = "Error checking room existence. Please try again.";
-                }
                 return;
             }
 
             if (task.Result.Exists)
             {
-                // If the room code exists, show an error message.
                 Debug.Log("Room code " + roomCode + " already exists. Please try again.");
                 if (errorMessageText != null)
-                {
                     errorMessageText.text = "Room code already exists, please try again.";
-                }
             }
             else
             {
-                // Room doesn't exist. Proceed to create it.
                 CreateRoom(roomCode);
             }
         });
@@ -99,45 +71,83 @@ public class RoomManagerCreate : MonoBehaviour
 
     void CreateRoom(string roomCode)
     {
-        // Convert the string roomCode to an int
         int roomCodeInt = int.Parse(roomCode);
 
-        // Prepare player data with "ready" and "name"
+        // Step 1: Create main room structure
         var playerData = new Dictionary<string, object>
     {
         { "ready", true },
         { "name", username }
     };
 
-        // Prepare the full room data with id and player
         var roomData = new Dictionary<string, object>
     {
         { "id", roomCodeInt },
-        { $"players/{username}", playerData }
+        { "private", isPrivate },
+        { "players", new Dictionary<string, object> { { username, playerData } } }
     };
 
         dbReference.Child("rooms").Child(roomCode)
-            .UpdateChildrenAsync(roomData).ContinueWithOnMainThread(task =>
+            .SetValueAsync(roomData).ContinueWithOnMainThread(task =>
             {
                 if (task.IsCompleted)
                 {
-                    Debug.Log("Room " + roomCode + " created with player " + username + ", ready=true, and name field.");
+                    Debug.Log("Room basic structure created.");
                     CurrentRoomCode = roomCode;
 
-                // Proceed to lobby screen
-                UiController.Instance.ToLobbyScreen();
+                // Step 2: Now add minigame1 manually with SetValueAsync
+                dbReference.Child("rooms").Child(roomCode)
+                        .Child("minigames").Child("minigame1").Child("gameState")
+                        .SetValueAsync(null).ContinueWithOnMainThread(minigameTask =>
+                        {
+                            if (minigameTask.IsCompleted)
+                            {
+                                Debug.Log("minigame1 structure added successfully.");
+                            }
+                            else
+                            {
+                                Debug.LogError("Failed to add minigame1: " + minigameTask.Exception);
+                            }
+
+                        // Navigate to lobby regardless
+                        UiController.Instance.ToLobbyScreen();
+                        });
                 }
                 else
                 {
                     Debug.LogError("Failed to create room: " + task.Exception);
                     if (errorMessageText != null)
-                    {
                         errorMessageText.text = "Failed to create room. Please try again.";
-                    }
                 }
             });
     }
 
 
 
+
+    public void TogglePrivacyStatus()
+    {
+        isPrivate = !isPrivate;
+
+        if (privacyToggleButtonText != null)
+            privacyToggleButtonText.text = isPrivate ? "Private" : "Public";
+
+        if (!string.IsNullOrEmpty(CurrentRoomCode))
+        {
+            dbReference.Child("rooms").Child(CurrentRoomCode).Child("private").SetValueAsync(isPrivate)
+                .ContinueWithOnMainThread(task =>
+                {
+                    if (task.IsCompleted)
+                    {
+                        Debug.Log("Privacy status updated to " + isPrivate + " in Firebase.");
+                    }
+                    else
+                    {
+                        Debug.LogError("Failed to update privacy in Firebase: " + task.Exception);
+                        if (errorMessageText != null)
+                            errorMessageText.text = "Failed to update privacy. Try again.";
+                    }
+                });
+        }
+    }
 }

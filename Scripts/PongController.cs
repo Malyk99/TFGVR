@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class PongController : MonoBehaviour
 {
+    private FireBasePongPoints firebaseUpdater;
+
     public static PongController Instance { get; private set; }
 
     public Text TimerText, PointText;
@@ -36,6 +38,8 @@ public class PongController : MonoBehaviour
 
     private void Start()
     {
+        firebaseUpdater = FindFirstObjectByType<FireBasePongPoints>();
+
         StartPongBallPos = PongBall.transform.position;
         StartPongRacketPos = Racket.transform.position;
 
@@ -86,6 +90,7 @@ public class PongController : MonoBehaviour
         {
             Points++;
             PointText.text = "Points: " + Points;
+            firebaseUpdater?.UpdateMinigame2Score(Points);
         }
     }
 
@@ -95,8 +100,10 @@ public class PongController : MonoBehaviour
         {
             Points--;
             PointText.text = "Points: " + Points;
+            firebaseUpdater?.UpdateMinigame2Score(Points);
         }
     }
+
 
     public void OnTimerEnd()
     {
