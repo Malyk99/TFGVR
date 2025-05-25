@@ -17,6 +17,8 @@ import com.example.appfirebaselittledemons.activities.Minigame4Activity;
 import com.google.firebase.database.*;
 import androidx.annotation.Nullable;
 
+
+/*Clase de oro para controlar los estados de los juegos y dirigir al usuario al juego apropiado.*/
 public class GameStateUtils {
 
     public static void setupGameStateListeners(String roomCode, Activity activity, @Nullable TextView infoTextView) {

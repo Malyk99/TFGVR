@@ -132,7 +132,7 @@ public class Minigame4View extends View {
 
             case 2:
                 internalWalls.add(new RectF(width * 0.25f, height * 0.25f, width * 0.25f + wallThickness, height * 0.75f));
-                internalWalls.add(new RectF(width * 0.5f, height * 0.4f, width * 0.5f + wallThickness, height * 0.9f));
+                internalWalls.add(new RectF(width * 0.5f, height * 0.4f, width * 0.5f + wallThickness, height * 0.7f));
                 internalWalls.add(new RectF(width * 0.7f, 0, width * 0.7f + wallThickness, height * 0.6f));
                 break;
 
@@ -155,8 +155,8 @@ public class Minigame4View extends View {
     public void updateBall(float deltaX, float deltaY) {
         if (ballInHole) return;
 
-        // Landscape mode adjustment: X = -deltaY, Y = -deltaX
-        float adjustedX = -deltaY;
+        // Landscape mode adjustment: X = deltaY, Y = deltaX
+        float adjustedX = deltaY;
         float adjustedY = deltaX;
 
         velocityX += adjustedX;

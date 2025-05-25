@@ -225,7 +225,6 @@ public class WaitingLobbyActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                // Puedes habilitar algo si todos están listos
             }
 
             @Override

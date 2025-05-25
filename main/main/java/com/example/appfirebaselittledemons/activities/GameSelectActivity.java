@@ -15,6 +15,10 @@ import com.google.firebase.database.*;
 
 import java.util.HashMap;
 
+
+
+/*Esto es una antigua clase , utilizada para el desarrollo que permitia el acceso
+ a los juegos sin necesitar tener confirmación por parte de Firbease DB*/
 public class GameSelectActivity extends AppCompatActivity {
     private String roomCode, userId;
     private DatabaseReference playerRef;
@@ -25,10 +29,8 @@ public class GameSelectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_select);
 
-        // ✅ Set screen to landscape mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        // ✅ Get room code & user ID
         if (getIntent() != null && getIntent().hasExtra("roomCode") && getIntent().hasExtra("userId")) {
             roomCode = getIntent().getStringExtra("roomCode");
             userId = getIntent().getStringExtra("userId");
@@ -41,26 +43,26 @@ public class GameSelectActivity extends AppCompatActivity {
             return;
         }
 
-        // ✅ Initialize buttons
+
         Button buttonMinigame1 = findViewById(R.id.buttonMinigame1);
         Button buttonMinigame2 = findViewById(R.id.buttonMinigame2);
         Button buttonMinigame3 = findViewById(R.id.buttonMinigame3);
         Button buttonMinigame4 = findViewById(R.id.buttonMinigame4);
         Button buttonBack = findViewById(R.id.buttonBack);
 
-        // ✅ Set button listeners
+
         buttonMinigame1.setOnClickListener(v -> openMinigame("Minigame1Activity"));
         buttonMinigame2.setOnClickListener(v -> openMinigame("Minigame2Activity"));
         buttonMinigame3.setOnClickListener(v -> openMinigame("Minigame3Activity"));
         buttonMinigame4.setOnClickListener(v -> openMinigame("Minigame4Activity"));
         buttonBack.setOnClickListener(v -> finish());
 
-        // ✅ Call FirebaseUtils to monitor if the player gets kicked
+
         FirebaseUtils.monitorPlayerStatus(this, roomCode, userId);
 
     }
 
-    /** ✅ Open selected minigame */
+
     private void openMinigame(String activityName) {
         try {
             Class<?> activityClass = Class.forName("com.example.appfirebaselittledemons.activities." + activityName);
@@ -73,14 +75,14 @@ public class GameSelectActivity extends AppCompatActivity {
             Toast.makeText(this, "Minigame not available!", Toast.LENGTH_SHORT).show();
         }
     }
-    /** ✅ Ensures the 'minigames' structure exists in Firebase */
+
     private void initializeMinigamesStructure(String roomCode) {
         DatabaseReference minigamesRef = FirebaseDatabase.getInstance()
                 .getReference("rooms")
                 .child(roomCode)
                 .child("minigames");
 
-        // Check if minigame1 exists
+
         minigamesRef.child("minigame1").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

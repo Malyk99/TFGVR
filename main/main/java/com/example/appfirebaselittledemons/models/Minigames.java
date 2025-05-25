@@ -6,7 +6,7 @@ import java.util.Map;
 public class Minigames {
     private Map<String, Boolean> blockers;
 
-    // Constructor vacío requerido por Firebase
+
     public Minigames() {
         this.blockers = new HashMap<>();
     }

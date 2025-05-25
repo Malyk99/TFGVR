@@ -24,17 +24,10 @@ public class FirebaseUtils {
         return FirebaseDatabase.getInstance().getReference();
     }
 
-    // Obtener referencia específica a una sala
     public static DatabaseReference getRoomReference(String roomCode) {
         return getDatabaseReference().child("rooms").child(roomCode);
     }
 
-    /**
-     * ✅ Monitors if a player is still in the room. If removed, it exits the activity.
-     * @param activity The current activity (for finishing it if needed).
-     * @param roomCode The room ID.
-     * @param userId The player ID.
-     */
     public static void monitorPlayerStatus(Activity activity, String roomCode, String userId) {
         DatabaseReference playerRef = FirebaseDatabase.getInstance()
                 .getReference("rooms")

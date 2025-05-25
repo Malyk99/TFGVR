@@ -5,7 +5,6 @@ public class Players {
     private String name;
     private boolean ready;
 
-    // Required for Firebase
     public Players() {}
 
     public Players(String name, boolean ready) {

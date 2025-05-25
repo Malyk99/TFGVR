@@ -77,7 +77,7 @@ public class Minigame1Activity extends AppCompatActivity {
     }
 
 
-    /** ✅ Start the countdown timer */
+
     private void startCountdown() {
         countdownRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -14,7 +14,7 @@ public class FirebaseAdminManager {
         roomsRef = FirebaseDatabase.getInstance().getReference("rooms");
     }
 
-    /** ✅ Validate if a user is an admin and if the room code matches */
+
     public void validateAdminLogin(String adminUsername, String enteredPassword, OnAdminLoginListener listener) {
         Log.d("FirebaseDEBUG", "Checking admin login for: " + adminUsername);
 
@@ -52,27 +52,23 @@ public class FirebaseAdminManager {
 
 
 
-    /** ✅ Delete a specific room (Admin already validated) */
     public void deleteRoom(String roomCode, OnRoomDeleteListener listener) {
         roomsRef.child(roomCode).removeValue()
                 .addOnSuccessListener(aVoid -> listener.onDeleteSuccess("Sala eliminada correctamente."))
                 .addOnFailureListener(e -> listener.onDeleteFailure("Error al eliminar la sala: " + e.getMessage()));
     }
 
-    /** ✅ Delete all rooms from Firebase */
     public void deleteAllRooms(OnRoomDeleteListener listener) {
         roomsRef.removeValue()
                 .addOnSuccessListener(aVoid -> listener.onDeleteSuccess("Todas las salas han sido eliminadas."))
                 .addOnFailureListener(e -> listener.onDeleteFailure("Error al eliminar todas las salas: " + e.getMessage()));
     }
 
-    /** ✅ Listener for Admin Login */
     public interface OnAdminLoginListener {
         void onSuccess();
         void onFailure(String error);
     }
 
-    /** ✅ Listener for Room Deletion */
     public interface OnRoomDeleteListener {
         void onDeleteSuccess(String message);
         void onDeleteFailure(String error);

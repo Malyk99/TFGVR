@@ -33,12 +33,6 @@ public class FirstScreenActivity extends AppCompatActivity {
             goToMain();
         });
 
-        videoView.setOnErrorListener((mp, what, extra) -> {
-            Log.e("VideoTest", "Video error: what=" + what + ", extra=" + extra);
-            goToMain();
-            return true;
-        });
-
     }
 
     private void goToMain() {

@@ -24,7 +24,7 @@ public class AdminViewActivity extends AppCompatActivity {
     private AdminRoomAdapter adapter;
     private FirebaseDataManager dataManager;
     private String adminUsername;
-    private Button buttonCreateRoom, buttonDeleteSelected, buttonSelectAll;
+    private Button buttonBack, buttonCreateRoom, buttonDeleteSelected, buttonSelectAll;
     private Set<String> selectedRooms = new HashSet<>();
 
     @Override
@@ -51,7 +51,8 @@ public class AdminViewActivity extends AppCompatActivity {
         buttonCreateRoom.setOnClickListener(v -> showCreateRoomDialog());
         buttonDeleteSelected.setOnClickListener(v -> confirmDeleteSelectedRooms());
         buttonSelectAll.setOnClickListener(v -> selectAllRooms());
-
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonBack.setOnClickListener(v -> finish());
         loadRooms();
     }
 

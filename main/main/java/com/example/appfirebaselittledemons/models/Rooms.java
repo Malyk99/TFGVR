@@ -10,7 +10,6 @@ public class Rooms {
 
     private int playerCount;
 
-    // Constructor vacío requerido por Firebase
     public Rooms() {}
 
     public Rooms(int id) {

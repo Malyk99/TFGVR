@@ -21,7 +21,7 @@ public class FirebaseDataManager {
         firebaseRepository = new FirebaseRepository();
     }
 
-    /** Leer las salas disponibles */
+    /** Leer las salas disponibles sin las rivadas */
     public void fetchRooms(OnRoomsFetchedListener listener) {
         firebaseRepository.getRoomsReference().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -90,10 +90,7 @@ public class FirebaseDataManager {
     }
 
 
-
-
-
-    /** Leer jugadores de una sala */
+    /** leer jugadores de una sala */
     public void fetchPlayers(String roomCode, OnPlayersFetchedListener listener) {
         firebaseRepository.getRoomsReference()
                 .child(roomCode)
@@ -122,15 +119,13 @@ public class FirebaseDataManager {
     }
 
 
-
-    /** Insertar una nueva sala en Firebase */
     public void createRoom(Rooms room, OnDataInsertedListener listener) {
         firebaseRepository.getRoomsReference().child(String.valueOf(room.getId()))
                 .setValue(room)
                 .addOnSuccessListener(aVoid -> listener.onSuccess())
                 .addOnFailureListener(e -> listener.onFailure(e.getMessage()));
     }
-    /** ✅ Convert DataSnapshot into a List of Players */
+
     public List<Players> convertSnapshotToPlayerList(@NonNull DataSnapshot snapshot) {
         List<Players> playerList = new ArrayList<>();
         for (DataSnapshot playerSnapshot : snapshot.getChildren()) {
@@ -143,8 +138,6 @@ public class FirebaseDataManager {
         return playerList;
     }
 
-
-    /** Insertar un nuevo jugador en una sala */
     public void addPlayerToRoom(String roomCode, String username, OnPlayerAddedListener listener) {
         DatabaseReference roomRef = firebaseRepository.getRoomsReference().child(roomCode).child("players");
 
@@ -161,8 +154,6 @@ public class FirebaseDataManager {
         void onFailure(Exception e);
     }
 
-
-    /** Insertar datos en minijuegos */
     public void updateMinigameState(String roomCode, String minigame, String blocker, boolean state, OnDataInsertedListener listener) {
         firebaseRepository.getMinigamesReference(roomCode).child(minigame).child(blocker)
                 .setValue(state)
@@ -218,9 +209,6 @@ public class FirebaseDataManager {
         void onResult(boolean roomExists, boolean roomFull);
     }
 
-
-
-    /** Interface to handle the result of room check */
     public interface OnRoomCheckListener {
         void onCheckComplete(boolean exists);
     }
@@ -266,7 +254,7 @@ public class FirebaseDataManager {
             roomsRef.child(roomId).removeValue();
         }
 
-        // ✅ Notify when deletion is complete
+
         listener.onRoomsDeleted(true);
     }
 
