@@ -62,13 +62,7 @@
         <!-- Admin View -->
         <activity android:name=".activities.AdminViewActivity" />
         <activity android:name=".activities.AdminRoomPlayersActivity" />
-
-
-
-
-
-
-
+        
     </application>
 
 </manifest>
