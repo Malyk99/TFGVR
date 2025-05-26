@@ -23,10 +23,9 @@ public class MinigameManager : MonoBehaviour
 
         roomCode = RoomManagerCreate.CurrentRoomCode;
         roomCodeReady = true;
-        Debug.Log("?? Room code received by MinigameManager: " + roomCode);
     }
 
-    public void SelectMinigame(string uiKey)
+    public static void SelectMinigame(string uiKey)
     {
         switch (uiKey.ToLower())
         {

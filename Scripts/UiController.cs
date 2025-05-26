@@ -285,12 +285,14 @@ public class UiController : MonoBehaviour
         SetRoundResults(OrderedResults, Turns);
 
         SwapVrScreen.SetActive(false);
+        MinigameExplanationScreen.SetActive(false);
         RoundResultsScreen.SetActive(true);
     }
 
     public void ToEndResultsScreen(Dictionary<string, int> OrderedResults, int Turns)
     {
         SetEndResults(OrderedResults, Turns);
+        RoundResultsScreen.SetActive(false);
 
         if (Turns == 1)
         {
@@ -424,12 +426,14 @@ public class UiController : MonoBehaviour
         if (Round != -1)
         {
             minigame = GameManager.Instance.GetShuffledDictionary()[Round];
+            SelectedMinigame = minigame;
         }
         else
         {
             minigame = SelectedMinigame;
         }
 
+        MinigameManager.SelectMinigame(minigame);
         MinigameNameText.text = minigame;
         ExplanationText.text = MinigameExplanations[minigame];
     }

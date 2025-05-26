@@ -46,7 +46,6 @@ public class FirebaseRoundManager : MonoBehaviour
         }
 
         roomCode = RoomManagerCreate.CurrentRoomCode;
-        Debug.Log("?? Room code acquired: " + roomCode);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -55,7 +54,6 @@ public class FirebaseRoundManager : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            Debug.Log("?? Player entered trigger zone, starting rounds...");
             triggerActivated = true;
             StartCoroutine(HandleRounds());
         }
@@ -146,13 +144,11 @@ public class FirebaseRoundManager : MonoBehaviour
     {
         Time.timeScale = 0.25f;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        Debug.Log("?? Slow motion triggered!");
     }
 
     private void ResetTimeScale()
     {
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02f;
-        Debug.Log("?? Time scale reset.");
     }
 }

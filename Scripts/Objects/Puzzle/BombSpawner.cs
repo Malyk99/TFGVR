@@ -26,7 +26,6 @@ public class FirebaseBombSpawner : MonoBehaviour
         {
             if (task.Result == DependencyStatus.Available)
             {
-                Debug.Log("? Firebase ready.");
                 StartCoroutine(WaitForRoomCode());
             }
             else
@@ -44,7 +43,6 @@ public class FirebaseBombSpawner : MonoBehaviour
         }
 
         roomCode = RoomManagerCreate.CurrentRoomCode;
-        Debug.Log("?? Room code received: " + roomCode);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -53,7 +51,6 @@ public class FirebaseBombSpawner : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         triggered = true;
-        Debug.Log("?? Player triggered bomb spawner — game state set to inProgress");
 
         
 

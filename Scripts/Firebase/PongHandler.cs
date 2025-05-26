@@ -30,7 +30,6 @@ public class Minigame2PositionListener : MonoBehaviour
         }
 
         roomCode = RoomManagerCreate.CurrentRoomCode;
-        Debug.Log("Room code fetched from RoomManagerCreate: " + roomCode);
 
         if (movableObject == null || leftEnd == null || rightEnd == null)
         {
@@ -38,8 +37,6 @@ public class Minigame2PositionListener : MonoBehaviour
             yield break;
         }
 
-        Debug.Log("Listening to path: rooms/" + roomCode + "/minigames/minigame2/position");
-        Debug.Log("LeftEnd X: " + leftEnd.position.x + " | RightEnd X: " + rightEnd.position.x);
 
         if (!listenerSet)
         {
@@ -62,8 +59,6 @@ public class Minigame2PositionListener : MonoBehaviour
 
     void OnPositionChanged(object sender, ValueChangedEventArgs args)
     {
-        Debug.Log("Firebase ValueChanged event triggered");
-
         if (args.DatabaseError != null)
         {
             Debug.LogError("Firebase error: " + args.DatabaseError.Message);

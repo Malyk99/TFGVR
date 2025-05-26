@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Round = -1;
+        MaxRounds = 2;
     }
 
     public void StartPartyGame()
@@ -82,12 +83,14 @@ public class GameManager : MonoBehaviour
     public void OnSelectedMinigame()
     {
         UiController.Instance.SetSelectedMinigame(Selectedminigame);
+        Debug.Log(Selectedminigame);
         UiController.Instance.ToSingleMinigameSettingsScreen("MinigameSelectionScreen");
     }
 
     public void StartMinigame() // Llamado desde el inspector
     {
         string Minigame = UiController.Instance.GetSelectedMinigame();
+        MinigameManager.SelectMinigame(Minigame);
 
         if (Minigame == "Basketball")
         {
@@ -144,11 +147,13 @@ public class GameManager : MonoBehaviour
             UiController.Instance.DisableRoundResultsScreen();
         }
 
+        Debug.Log($"{Round} {MaxRounds}");
+
         if (Round != -1)
         {
             StartMinigame(ShuffledMinigames[Round]);
         }
-        else
+        else if (Round < MaxRounds)
         {
             StartMinigame();
         }
@@ -164,11 +169,9 @@ public class GameManager : MonoBehaviour
             MaxPlayer = PlayerNameList[TurnCount];
         }
 
-        if (Round == -1)
-        {
-            EndResults.Add(PlayerNameList[TurnCount], Score);
-        }
-        else
+        EndResults.Add(PlayerNameList[TurnCount], Score);
+
+        if (Round != -1)
         {
             Source.PlayOneShot(EndTurn);
         }
@@ -178,6 +181,7 @@ public class GameManager : MonoBehaviour
         if (TurnCount == Turns)
         {
             OnRoundEnd(EndResults, MaxPlayer);
+            EndResults.Clear();
         }
         else
         {
@@ -216,7 +220,10 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                UiController.Instance.ToRoundResultsScreen(Results, Turns);
+                if (Results.Count > 0)
+                {
+                    UiController.Instance.ToRoundResultsScreen(Results, Turns);
+                }
             }
         }
         ScoreList.Clear();
@@ -257,7 +264,6 @@ public class GameManager : MonoBehaviour
     public void SetTurns() // Llamada por los botones de continue de ambas escenas (Settings pre game)
     {
         Turns = UiController.Instance.GetPlayerCount();
-        Debug.Log("Turns: " + Turns);
     }
 
     public void SetMaxRounds(int MaxRounds)
@@ -314,9 +320,8 @@ public class GameManager : MonoBehaviour
         for (int i = 1; i <= Turns; i++)
         {
             PlayerNameList.Add("Player " + i);
-            Debug.Log("Aded " + PlayerNameList[i - 1]);
+
         }
-        Debug.Log(PlayerNameList);
     }
 
     public Dictionary<int, string> GetShuffledDictionary()
@@ -324,23 +329,26 @@ public class GameManager : MonoBehaviour
         return ShuffledMinigames;
     }
 
-    private void ShuffleAndReindex(Dictionary<string, string> MinigameExplanations)
+    public void ShuffleAndReindex(Dictionary<string, string> original)
     {
-        List<string> keys = new List<string>(MinigameExplanations.Keys);
+        List<string> llaves = new List<string>(original.Keys);
 
         System.Random rng = new System.Random();
-        int n = keys.Count;
+        int n = llaves.Count;
         while (n > 1)
         {
             n--;
             int k = rng.Next(n + 1);
-            (keys[n], keys[k]) = (keys[k], keys[n]);
+            string temp = llaves[k];
+            llaves[k] = llaves[n];
+            llaves[n] = temp;
         }
 
         ShuffledMinigames.Clear();
-        for (int i = 0; i < keys.Count; i++)
+
+        for (int i = 0; i < llaves.Count; i++)
         {
-            ShuffledMinigames[i] = MinigameExplanations[keys[i]];
+            ShuffledMinigames[i] = llaves[i];
         }
     }
 }

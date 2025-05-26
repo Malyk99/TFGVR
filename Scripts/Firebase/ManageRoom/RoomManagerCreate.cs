@@ -92,7 +92,6 @@ public class RoomManagerCreate : MonoBehaviour
             {
                 if (task.IsCompleted)
                 {
-                    Debug.Log("Room basic structure created.");
                     CurrentRoomCode = roomCode;
 
                 // Step 2: Now add minigame1 manually with SetValueAsync
