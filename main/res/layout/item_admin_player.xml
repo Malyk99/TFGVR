@@ -12,6 +12,7 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:text="Player"
+        android:textColor="@color/white"
         android:textSize="16sp" />
 
     <Button

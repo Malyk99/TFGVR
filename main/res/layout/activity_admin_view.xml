@@ -62,4 +62,16 @@
         android:elevation="4dp"
         android:layout_marginTop="8dp"
         android:layout_gravity="center_horizontal" />
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="end"
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="14dp"
+        android:backgroundTint="#6200EE"
+        android:textColor="#FFFFFF"
+        android:elevation="4dp" />
 </LinearLayout>
